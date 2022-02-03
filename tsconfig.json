@@ -15,13 +15,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    /* Paths alias */
-    "baseUrl": ".", //Required when using paths, cause mappings below are relative to this one
-    "paths": {
-      "@components/*": ["src/components/*"],
-      "@app/*": ["src/*"], // Alias /src to /app
-      "@public/*": ["public/*"]
-    }
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }
