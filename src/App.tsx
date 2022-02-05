@@ -1,11 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
 
-function App() {
-  return <TestText>Hello world</TestText>
+import Homepage from './pages/Homepage'
+
+const App = (): JSX.Element => {
+  return <Homepage />
 }
 
-const TestText = styled.div`
-  font-family: Tungsten;
-`
 export default App
