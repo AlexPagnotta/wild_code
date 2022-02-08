@@ -71,6 +71,7 @@ const ImageGallery = (): JSX.Element => {
             </Image>
           )
         })}
+        <Text as={motion.p}>{currentElement.title}</Text>
       </Container>
     </>
   )
@@ -83,8 +84,16 @@ const Container = styled.div`
   display: grid;
   gap: 2rem;
   grid-template-columns: auto 1fr auto;
+  grid-template-areas: 'before current next';
   overflow: hidden;
   position: relative;
+`
+
+const Text = styled.p`
+  grid-area: current;
+  font-size: 5rem;
+  align-self: center;
+  justify-self: center;
 `
 
 type ImageProps = {
@@ -102,18 +111,24 @@ const imageVariant = ({ status }: ImageProps) => {
 
     case 'previous':
       return css`
+        grid-area: before;
+
         align-self: end;
         justify-self: start;
       `
 
     case 'current':
       return css`
+        grid-area: current;
+
         align-self: center;
         justify-self: center;
       `
 
     case 'next':
       return css`
+        grid-area: next;
+
         align-self: start;
         justify-self: end;
       `
