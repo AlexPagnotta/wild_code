@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import React, { useState } from 'react'
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler'
 import styled, { css } from 'styled-components'
@@ -40,72 +40,119 @@ const ImageGallery = (): JSX.Element => {
         timeout={600}
         disableSwipe
       >
-        <Container>
-          {[
-            initialElement,
-            previousElement,
-            currentElement,
-            nextElement,
-            lastElement,
-          ].map((item, index) => {
-            const status =
-              index === 0
-                ? 'initial'
-                : index === 1
-                ? 'previous'
-                : index === 2
-                ? 'current'
-                : index === 3
-                ? 'next'
-                : 'last'
+        <Wrapper>
+          <AnimatePresence>
+            <Background
+              key={currentElement.id}
+              src={currentElement.image1X}
+              srcRetina={currentElement.image2X}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+            />
+          </AnimatePresence>
+          <Grid>
+            {[
+              initialElement,
+              previousElement,
+              currentElement,
+              nextElement,
+              lastElement,
+            ].map((item, index) => {
+              const status =
+                index === 0
+                  ? 'initial'
+                  : index === 1
+                  ? 'previous'
+                  : index === 2
+                  ? 'current'
+                  : index === 3
+                  ? 'next'
+                  : 'last'
 
-            return (
-              <ImageWrapper
-                key={currentIndex + index}
-                layout
-                variants={galleryItemVariants}
-                animate={
-                  status === 'initial' || status === 'last'
-                    ? 'hidden'
-                    : 'visible'
-                }
-                onClick={() =>
-                  status === 'previous'
-                    ? loadNext()
-                    : status === 'next'
-                    ? loadPrevious()
-                    : undefined
-                }
-                as={motion.div}
-                transition={{ ease: 'easeOut', duration: 1 }}
-                status={status}
-              >
-                <ImageItem
-                  src={item.image1X}
-                  srcRetina={item.image2X}
-                  alt={''}
-                />
-              </ImageWrapper>
-            )
-          })}
-          <Text as={motion.p}>{currentElement.title}</Text>
-        </Container>
+              return (
+                <ImageWrapper
+                  key={currentIndex + index}
+                  layout
+                  variants={galleryItemVariants}
+                  animate={
+                    status === 'initial' || status === 'last'
+                      ? 'hidden'
+                      : 'visible'
+                  }
+                  onClick={() =>
+                    status === 'previous'
+                      ? loadNext()
+                      : status === 'next'
+                      ? loadPrevious()
+                      : undefined
+                  }
+                  as={motion.div}
+                  transition={{ ease: 'easeOut', duration: 1 }}
+                  status={status}
+                >
+                  <ImageItem
+                    src={item.image1X}
+                    srcRetina={item.image2X}
+                    alt={''}
+                  />
+                </ImageWrapper>
+              )
+            })}
+            <Text as={motion.p}>{currentElement.title}</Text>
+          </Grid>
+        </Wrapper>
       </ReactScrollWheelHandler>
     </>
   )
 }
 
-const Container = styled.div`
+const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
-  background: gray;
+
+  position: relative;
+  overflow: hidden;
+`
+
+const Background = styled(motion.div)<BackgroundProps>`
+  content: '';
+  ${({ src, srcRetina }) =>
+    src
+      ? css`
+          background-image: url('${src}');
+          background-image: image-set(url('${srcRetina}') 2x);
+        `
+      : null};
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  z-index: -99;
+  top: 0;
+
+  filter: blur(60px);
+  transform: scale(1.3);
+`
+
+const Grid = styled.div`
+  width: 100%;
+  height: 100%;
   display: grid;
   gap: 2rem;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: 'before current next';
-  overflow: hidden;
-  position: relative;
 `
+
+type BackgroundProps = {
+  src: string
+  srcRetina: string
+}
 
 const Text = styled.p`
   grid-area: current;
