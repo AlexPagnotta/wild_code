@@ -1,5 +1,6 @@
 export const galleryData = [
   {
+    id: 1,
     image1X: 'image01.jpg',
     image2X: 'image01@2X.jpg',
     title: 'Everyday Flowers',
@@ -8,6 +9,7 @@ export const galleryData = [
     authorSite: '#',
   },
   {
+    id: 2,
     image1X: 'image02.jpg',
     image2X: 'image02@2X.jpg',
     title: 'The wilder Night',
@@ -16,6 +18,7 @@ export const galleryData = [
     authorSite: '#',
   },
   {
+    id: 3,
     image1X: 'image03.jpg',
     image2X: 'image03@2X.jpg',
     title: 'Smooth Memories',
@@ -24,6 +27,7 @@ export const galleryData = [
     authorSite: '#',
   },
   {
+    id: 4,
     image1X: 'image04.jpg',
     image2X: 'image04@2X.jpg',
     title: 'The Future uInverse',
@@ -32,6 +36,7 @@ export const galleryData = [
     authorSite: '#',
   },
   {
+    id: 5,
     image1X: 'image05.jpg',
     image2X: 'image05@2X.jpg',
     title: 'SHE Was Born Urban',
