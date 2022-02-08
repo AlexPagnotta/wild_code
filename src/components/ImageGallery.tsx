@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import React, { useState } from 'react'
+import ReactScrollWheelHandler from 'react-scroll-wheel-handler'
 import styled, { css } from 'styled-components'
 
 import { galleryData } from '../data/galleryData'
@@ -28,7 +29,12 @@ const ImageGallery = (): JSX.Element => {
   const lastElement = getByInfiniteIndex(galleryData, currentIndex + 2)
 
   return (
-    <>
+    <ReactScrollWheelHandler
+      upHandler={() => loadNext()}
+      downHandler={() => loadPrevious()}
+      timeout={600}
+      disableSwipe
+    >
       <Container>
         {[
           initialElement,
@@ -73,7 +79,7 @@ const ImageGallery = (): JSX.Element => {
         })}
         <Text as={motion.p}>{currentElement.title}</Text>
       </Container>
-    </>
+    </ReactScrollWheelHandler>
   )
 }
 
