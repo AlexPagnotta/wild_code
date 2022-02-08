@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components'
 
 import { galleryData } from '../../data/galleryData'
 import { getByInfiniteIndex } from '../../utils/arrayUtils'
+import Image from '../ui/Image'
 
 import Cursor from './Cursor'
 
@@ -59,7 +60,7 @@ const ImageGallery = (): JSX.Element => {
                 : 'last'
 
             return (
-              <Image
+              <ImageWrapper
                 key={currentIndex + index}
                 layout
                 variants={galleryItemVariants}
@@ -79,8 +80,12 @@ const ImageGallery = (): JSX.Element => {
                 transition={{ ease: 'easeOut', duration: 1 }}
                 status={status}
               >
-                {currentIndex + index}
-              </Image>
+                <ImageItem
+                  src={item.image1X}
+                  srcRetina={item.image2X}
+                  alt={''}
+                />
+              </ImageWrapper>
             )
           })}
           <Text as={motion.p}>{currentElement.title}</Text>
@@ -109,11 +114,11 @@ const Text = styled.p`
   justify-self: center;
 `
 
-type ImageProps = {
+type ImageWrapperProps = {
   status: 'initial' | 'previous' | 'current' | 'next' | 'last'
 }
 
-const imageVariant = ({ status }: ImageProps) => {
+const imageVariant = ({ status }: ImageWrapperProps) => {
   switch (status) {
     case 'initial':
       return css`
@@ -155,9 +160,10 @@ const imageVariant = ({ status }: ImageProps) => {
   }
 }
 
-const Image = styled.div<ImageProps>`
-  background-color: red;
-  border-radius: 2rem;
+const ImageWrapper = styled.div<ImageWrapperProps>`
+  border-radius: 0.625rem;
+  border: 1px solid #000000;
+  overflow: hidden;
 
   ${({ status }) =>
     status === 'current'
@@ -171,6 +177,13 @@ const Image = styled.div<ImageProps>`
         `}
 
   ${imageVariant};
+`
+
+const ImageItem = styled(Image)`
+  width: 100%;
+  height: 100%;
+  object-position: center;
+  object-fit: cover;
 `
 
 export default ImageGallery
