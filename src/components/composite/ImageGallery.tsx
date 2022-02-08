@@ -43,7 +43,7 @@ const ImageGallery = (): JSX.Element => {
         <Wrapper>
           <AnimatePresence>
             <Background
-              key={currentElement.id}
+              key={`background_${currentElement.id}`}
               src={currentElement.image1X}
               srcRetina={currentElement.image2X}
               initial={{ opacity: 0 }}
@@ -100,7 +100,18 @@ const ImageGallery = (): JSX.Element => {
                 </ImageWrapper>
               )
             })}
-            <Text as={motion.p}>{currentElement.title}</Text>
+            <AnimatePresence exitBeforeEnter>
+              <Text
+                key={`title_${currentElement.id}`}
+                as={motion.p}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {currentElement.title}
+              </Text>
+            </AnimatePresence>
           </Grid>
         </Wrapper>
       </ReactScrollWheelHandler>
@@ -115,6 +126,11 @@ const Wrapper = styled.div`
   position: relative;
   overflow: hidden;
 `
+
+type BackgroundProps = {
+  src: string
+  srcRetina: string
+}
 
 const Background = styled(motion.div)<BackgroundProps>`
   content: '';
@@ -149,16 +165,13 @@ const Grid = styled.div`
   grid-template-areas: 'before current next';
 `
 
-type BackgroundProps = {
-  src: string
-  srcRetina: string
-}
-
 const Text = styled.p`
   grid-area: current;
   font-size: 5rem;
   align-self: center;
   justify-self: center;
+
+  z-index: 1;
 `
 
 type ImageWrapperProps = {
