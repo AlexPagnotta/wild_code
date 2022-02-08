@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler'
 import styled, { css } from 'styled-components'
 
-import { galleryData } from '../data/galleryData'
-import { getByInfiniteIndex } from '../utils/arrayUtils'
+import { galleryData } from '../../data/galleryData'
+import { getByInfiniteIndex } from '../../utils/arrayUtils'
+
+import Cursor from './Cursor'
 
 const galleryItemVariants = {
   visible: { opacity: 1 },
@@ -29,57 +31,62 @@ const ImageGallery = (): JSX.Element => {
   const lastElement = getByInfiniteIndex(galleryData, currentIndex + 2)
 
   return (
-    <ReactScrollWheelHandler
-      upHandler={() => loadNext()}
-      downHandler={() => loadPrevious()}
-      timeout={600}
-      disableSwipe
-    >
-      <Container>
-        {[
-          initialElement,
-          previousElement,
-          currentElement,
-          nextElement,
-          lastElement,
-        ].map((item, index) => {
-          const status =
-            index === 0
-              ? 'initial'
-              : index === 1
-              ? 'previous'
-              : index === 2
-              ? 'current'
-              : index === 3
-              ? 'next'
-              : 'last'
+    <>
+      <Cursor />
+      <ReactScrollWheelHandler
+        upHandler={() => loadNext()}
+        downHandler={() => loadPrevious()}
+        timeout={600}
+        disableSwipe
+      >
+        <Container>
+          {[
+            initialElement,
+            previousElement,
+            currentElement,
+            nextElement,
+            lastElement,
+          ].map((item, index) => {
+            const status =
+              index === 0
+                ? 'initial'
+                : index === 1
+                ? 'previous'
+                : index === 2
+                ? 'current'
+                : index === 3
+                ? 'next'
+                : 'last'
 
-          return (
-            <Image
-              key={currentIndex + index}
-              layout
-              variants={galleryItemVariants}
-              animate={
-                status === 'initial' || status === 'last' ? 'hidden' : 'visible'
-              }
-              onClick={() =>
-                status === 'previous'
-                  ? loadNext()
-                  : status === 'next'
-                  ? loadPrevious()
-                  : undefined
-              }
-              as={motion.div}
-              transition={{ ease: 'easeOut', duration: 1 }}
-              status={status}
-            >
-              {currentIndex + index}
-            </Image>
-          )
-        })}
-        <Text as={motion.p}>{currentElement.title}</Text>
-      </Container>
-    </ReactScrollWheelHandler>
+            return (
+              <Image
+                key={currentIndex + index}
+                layout
+                variants={galleryItemVariants}
+                animate={
+                  status === 'initial' || status === 'last'
+                    ? 'hidden'
+                    : 'visible'
+                }
+                onClick={() =>
+                  status === 'previous'
+                    ? loadNext()
+                    : status === 'next'
+                    ? loadPrevious()
+                    : undefined
+                }
+                as={motion.div}
+                transition={{ ease: 'easeOut', duration: 1 }}
+                status={status}
+              >
+                {currentIndex + index}
+              </Image>
+            )
+          })}
+          <Text as={motion.p}>{currentElement.title}</Text>
+        </Container>
+      </ReactScrollWheelHandler>
+    </>
   )
 }
 
