@@ -1,4 +1,6 @@
-export const theme: Theme = {
+import { DefaultTheme } from 'styled-components'
+
+export const theme: DefaultTheme = {
   screens: {
     sm: 640,
     md: 768,
@@ -6,14 +8,9 @@ export const theme: Theme = {
     xl: 1280,
     '2xl': 1600,
   },
-}
 
-export type Theme = {
-  screens: {
-    sm: number
-    md: number
-    lg: number
-    xl: number
-    '2xl': number
-  }
+  fontFamily: {
+    title: "'Tungsten', sans-serif",
+    base: 'Helvetica, sans-serif',
+  },
 }

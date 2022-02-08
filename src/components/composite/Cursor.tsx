@@ -34,10 +34,8 @@ const Cursor = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  background-color: yellow;
+  border-radius: 50px;
+  border: 8px solid white;
   z-index: 999;
   pointer-events: none;
 `

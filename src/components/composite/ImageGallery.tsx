@@ -6,6 +6,8 @@ import styled, { css } from 'styled-components'
 import { galleryData } from '../../data/galleryData'
 import { getByInfiniteIndex } from '../../utils/arrayUtils'
 import Image from '../ui/Image'
+import LinkButton from '../ui/LinkButton'
+import Text from '../ui/Text'
 
 import Cursor from './Cursor'
 
@@ -41,6 +43,7 @@ const ImageGallery = (): JSX.Element => {
         disableSwipe
       >
         <Wrapper>
+          <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
           <AnimatePresence>
             <Background
               key={`background_${currentElement.id}`}
@@ -101,18 +104,29 @@ const ImageGallery = (): JSX.Element => {
               )
             })}
             <AnimatePresence exitBeforeEnter>
-              <Text
+              <TextWrapper
                 key={`title_${currentElement.id}`}
                 as={motion.p}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 1 }}
               >
-                {currentElement.title}
-              </Text>
+                <Text variant='h1'>{currentElement.title}</Text>
+              </TextWrapper>
             </AnimatePresence>
           </Grid>
+          <InfoWrapper>
+            <Text>
+              {currentElement.authorName}
+              {'\n'}for {currentElement.client}
+            </Text>
+            <Text>{currentElement.pubblicationDate}</Text>
+            <LinkButton href={currentElement.authorSite}>
+              HAVE A LOOK
+            </LinkButton>
+            {/**/}
+          </InfoWrapper>
         </Wrapper>
       </ReactScrollWheelHandler>
     </>
@@ -125,6 +139,14 @@ const Wrapper = styled.div`
 
   position: relative;
   overflow: hidden;
+
+  padding: 16px;
+`
+
+const HeaderTitle = styled(Text)`
+  position: absolute;
+  top: 16px;
+  left: 16px;
 `
 
 type BackgroundProps = {
@@ -165,13 +187,14 @@ const Grid = styled.div`
   grid-template-areas: 'before current next';
 `
 
-const Text = styled.p`
+const TextWrapper = styled.div`
   grid-area: current;
-  font-size: 5rem;
+  text-align: center;
   align-self: center;
   justify-self: center;
-
   z-index: 1;
+
+  max-width: 900px;
 `
 
 type ImageWrapperProps = {
@@ -244,6 +267,22 @@ const ImageItem = styled(Image)`
   height: 100%;
   object-position: center;
   object-fit: cover;
+`
+
+const InfoWrapper = styled.div`
+  position: absolute;
+  bottom: 90px;
+  right: 155px;
+
+  white-space: pre;
+
+  div {
+    margin-bottom: 16px;
+  }
+
+  div:last-of-type {
+    text-align: right;
+  }
 `
 
 export default ImageGallery

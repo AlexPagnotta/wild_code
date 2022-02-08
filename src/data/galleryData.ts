@@ -5,7 +5,8 @@ export const galleryData = [
     image2X: '/images/image01@2X.jpg',
     title: 'Everyday Flowers',
     pubblicationDate: 'JUN 2019',
-    authorName: 'Johanna Hobel for vouge',
+    authorName: 'Johanna Hobel',
+    client: 'vouge',
     authorSite: '#',
   },
   {
@@ -14,7 +15,8 @@ export const galleryData = [
     image2X: '/images/image02@2X.jpg',
     title: 'The wilder Night',
     pubblicationDate: 'DEC 2019',
-    authorName: 'Johanna Hobel for wild',
+    authorName: 'Johanna Hobel',
+    client: 'wild',
     authorSite: '#',
   },
   {
@@ -23,7 +25,8 @@ export const galleryData = [
     image2X: '/images/image03@2X.jpg',
     title: 'Smooth Memories',
     pubblicationDate: 'FEB 2020',
-    authorName: 'Johanna Hobel for chanel',
+    authorName: 'Johanna Hobel',
+    client: 'chanel',
     authorSite: '#',
   },
   {
@@ -32,7 +35,8 @@ export const galleryData = [
     image2X: '/images/image04@2X.jpg',
     title: 'The Future uInverse',
     pubblicationDate: 'APR 2019',
-    authorName: 'Johanna Hobel for on',
+    authorName: 'Johanna Hobel',
+    client: 'on',
     authorSite: '#',
   },
   {
@@ -41,7 +45,8 @@ export const galleryData = [
     image2X: '/images/image05@2X.jpg',
     title: 'SHE Was Born Urban',
     pubblicationDate: 'DEC 2021',
-    authorName: 'Johanna Hobel for si',
+    authorName: 'Johanna Hobel',
+    client: 'on',
     authorSite: '#',
   },
 ]
