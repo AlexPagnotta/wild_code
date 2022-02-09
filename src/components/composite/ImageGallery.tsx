@@ -129,8 +129,6 @@ const Wrapper = styled.div`
 
   position: relative;
   overflow: hidden;
-
-  padding: 16px;
 `
 
 const HeaderTitle = styled(Text)`
@@ -165,6 +163,7 @@ const Grid = styled.div`
   gap: 2rem;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: 'before current next';
+  padding: 16px;
 `
 
 const TextWrapper = styled.div`
