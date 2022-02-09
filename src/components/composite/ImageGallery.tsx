@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useState } from 'react'
-import ReactScrollWheelHandler from 'react-scroll-wheel-handler'
 import styled, { css } from 'styled-components'
 
 import { galleryData } from '../../data/galleryData'
@@ -36,99 +35,91 @@ const ImageGallery = (): JSX.Element => {
   return (
     <>
       <Cursor />
-      <ReactScrollWheelHandler
-        upHandler={() => loadNext()}
-        downHandler={() => loadPrevious()}
-        timeout={600}
-        disableSwipe
-      >
-        <Wrapper>
-          <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
-          <AnimatePresence>
-            <Background
-              key={`background_${currentElement.id}`}
-              src={currentElement.image1X}
-              srcRetina={currentElement.image2X}
+
+      <Wrapper>
+        <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
+        <AnimatePresence>
+          <Background
+            key={`background_${currentElement.id}`}
+            src={currentElement.image1X}
+            srcRetina={currentElement.image2X}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          />
+        </AnimatePresence>
+        <Grid>
+          {[
+            initialElement,
+            previousElement,
+            currentElement,
+            nextElement,
+            lastElement,
+          ].map((item, index) => {
+            const status =
+              index === 0
+                ? 'initial'
+                : index === 1
+                ? 'previous'
+                : index === 2
+                ? 'current'
+                : index === 3
+                ? 'next'
+                : 'last'
+
+            return (
+              <ImageWrapper
+                key={currentIndex + index}
+                layout
+                variants={galleryItemVariants}
+                animate={
+                  status === 'initial' || status === 'last'
+                    ? 'hidden'
+                    : 'visible'
+                }
+                onClick={() =>
+                  status === 'previous'
+                    ? loadNext()
+                    : status === 'next'
+                    ? loadPrevious()
+                    : undefined
+                }
+                as={motion.div}
+                transition={{ ease: 'easeOut', duration: 1 }}
+                status={status}
+              >
+                <ImageItem
+                  src={item.image1X}
+                  srcRetina={item.image2X}
+                  alt={''}
+                />
+              </ImageWrapper>
+            )
+          })}
+          <AnimatePresence exitBeforeEnter>
+            <TextWrapper
+              key={`title_${currentElement.id}`}
+              as={motion.p}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
-            />
+            >
+              <Text variant='h1'>{currentElement.title}</Text>
+            </TextWrapper>
           </AnimatePresence>
-          <Grid>
-            {[
-              initialElement,
-              previousElement,
-              currentElement,
-              nextElement,
-              lastElement,
-            ].map((item, index) => {
-              const status =
-                index === 0
-                  ? 'initial'
-                  : index === 1
-                  ? 'previous'
-                  : index === 2
-                  ? 'current'
-                  : index === 3
-                  ? 'next'
-                  : 'last'
-
-              return (
-                <ImageWrapper
-                  key={currentIndex + index}
-                  layout
-                  variants={galleryItemVariants}
-                  animate={
-                    status === 'initial' || status === 'last'
-                      ? 'hidden'
-                      : 'visible'
-                  }
-                  onClick={() =>
-                    status === 'previous'
-                      ? loadNext()
-                      : status === 'next'
-                      ? loadPrevious()
-                      : undefined
-                  }
-                  as={motion.div}
-                  transition={{ ease: 'easeOut', duration: 1 }}
-                  status={status}
-                >
-                  <ImageItem
-                    src={item.image1X}
-                    srcRetina={item.image2X}
-                    alt={''}
-                  />
-                </ImageWrapper>
-              )
-            })}
-            <AnimatePresence exitBeforeEnter>
-              <TextWrapper
-                key={`title_${currentElement.id}`}
-                as={motion.p}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-              >
-                <Text variant='h1'>{currentElement.title}</Text>
-              </TextWrapper>
-            </AnimatePresence>
-          </Grid>
-          <InfoWrapper>
-            <Text>
-              {currentElement.authorName}
-              {'\n'}for {currentElement.client}
-            </Text>
-            <Text>{currentElement.pubblicationDate}</Text>
-            <LinkButton href={currentElement.authorSite}>
-              HAVE A LOOK
-            </LinkButton>
-            {/**/}
-          </InfoWrapper>
-        </Wrapper>
-      </ReactScrollWheelHandler>
+        </Grid>
+        <InfoWrapper>
+          <Text>
+            {currentElement.authorName}
+            {'\n'}for {currentElement.client}
+          </Text>
+          <Text>{currentElement.pubblicationDate}</Text>
+          <LinkButton href={currentElement.authorSite}>HAVE A LOOK</LinkButton>
+          {/**/}
+        </InfoWrapper>
+      </Wrapper>
     </>
   )
 }
@@ -155,7 +146,6 @@ type BackgroundProps = {
 }
 
 const Background = styled(motion.div)<BackgroundProps>`
-  content: '';
   ${({ src, srcRetina }) =>
     src
       ? css`
@@ -173,9 +163,6 @@ const Background = styled(motion.div)<BackgroundProps>`
   position: absolute;
   z-index: -99;
   top: 0;
-
-  filter: blur(60px);
-  transform: scale(1.3);
 `
 
 const Grid = styled.div`
