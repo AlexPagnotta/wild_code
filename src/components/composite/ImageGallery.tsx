@@ -41,8 +41,7 @@ const ImageGallery = (): JSX.Element => {
         <AnimatePresence>
           <Background
             key={`background_${currentElement.id}`}
-            src={currentElement.image1X}
-            srcRetina={currentElement.image2X}
+            src={currentElement.imageBlur}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -142,17 +141,11 @@ const HeaderTitle = styled(Text)`
 
 type BackgroundProps = {
   src: string
-  srcRetina: string
 }
 
 const Background = styled(motion.div)<BackgroundProps>`
-  ${({ src, srcRetina }) =>
-    src
-      ? css`
-          background-image: url('${src}');
-          background-image: image-set(url('${srcRetina}') 2x);
-        `
-      : null};
+  background-image: url(${({ src }) => src});
+
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
