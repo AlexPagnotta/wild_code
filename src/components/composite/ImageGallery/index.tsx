@@ -2,13 +2,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 
-import { galleryData } from '../../data/galleryData'
-import { getByInfiniteIndex } from '../../utils/arrayUtils'
-import Image from '../ui/Image'
-import LinkButton from '../ui/LinkButton'
-import Text from '../ui/Text'
+import { galleryData } from '../../../data/galleryData'
+import { adaptInfiniteIndex } from '../../../utils/arrayUtils'
+import Image from '../../ui/Image'
+import LinkButton from '../../ui/LinkButton'
+import Text from '../../ui/Text'
+import Cursor from '../ProgressCursor'
 
-import Cursor from './Cursor'
+import GalleryProgressIndicator from './GalleryProgressIndicator'
 
 const galleryItemVariants = {
   visible: { opacity: 1 },
@@ -26,15 +27,33 @@ const ImageGallery = (): JSX.Element => {
     setCurrentIndex((prev) => prev + 1)
   }
 
-  const initialElement = getByInfiniteIndex(galleryData, currentIndex - 2)
-  const previousElement = getByInfiniteIndex(galleryData, currentIndex - 1)
-  const currentElement = getByInfiniteIndex(galleryData, currentIndex)
-  const nextElement = getByInfiniteIndex(galleryData, currentIndex + 1)
-  const lastElement = getByInfiniteIndex(galleryData, currentIndex + 2)
+  const currentElementIndex = adaptInfiniteIndex(
+    currentIndex,
+    galleryData.length
+  )
+
+  const initialElement =
+    galleryData[adaptInfiniteIndex(currentIndex - 1, galleryData.length)]
+
+  const previousElement =
+    galleryData[adaptInfiniteIndex(currentIndex, galleryData.length)]
+
+  const currentElement =
+    galleryData[adaptInfiniteIndex(currentIndex + 1, galleryData.length)]
+
+  const nextElement =
+    galleryData[adaptInfiniteIndex(currentIndex + 2, galleryData.length)]
+
+  const lastElement =
+    galleryData[adaptInfiniteIndex(currentIndex + 3, galleryData.length)]
 
   return (
     <>
-      <Cursor />
+      <Cursor
+        progressPercentage={
+          (currentElementIndex / (galleryData.length - 1)) * 100
+        }
+      />
 
       <Wrapper>
         <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
@@ -78,9 +97,9 @@ const ImageGallery = (): JSX.Element => {
                     : 'visible'
                 }
                 onClick={() =>
-                  status === 'previous'
+                  status === 'next'
                     ? loadNext()
-                    : status === 'next'
+                    : status === 'previous'
                     ? loadPrevious()
                     : undefined
                 }
@@ -99,13 +118,17 @@ const ImageGallery = (): JSX.Element => {
           <AnimatePresence exitBeforeEnter>
             <TextWrapper
               key={`title_${currentElement.id}`}
-              as={motion.p}
+              as={motion.div}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
             >
               <Text variant='h1'>{currentElement.title}</Text>
+              <GalleryProgressIndicator
+                currentIndex={currentElementIndex + 1}
+                totalItems={galleryData.length}
+              />
             </TextWrapper>
           </AnimatePresence>
         </Grid>
@@ -115,7 +138,9 @@ const ImageGallery = (): JSX.Element => {
             {'\n'}for {currentElement.client}
           </Text>
           <Text>{currentElement.pubblicationDate}</Text>
-          <LinkButton href={currentElement.authorSite}>HAVE A LOOK</LinkButton>
+          <LinkButton href={currentElement.authorSite} openInNewTab>
+            Have a look
+          </LinkButton>
           {/**/}
         </InfoWrapper>
       </Wrapper>
@@ -174,6 +199,10 @@ const TextWrapper = styled.div`
   z-index: 1;
 
   max-width: 900px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 type ImageWrapperProps = {
