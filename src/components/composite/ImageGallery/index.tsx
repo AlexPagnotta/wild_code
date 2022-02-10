@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import { galleryData } from '../../../data/galleryData'
+import { useScrollTrigger } from '../../../hooks/useScrollTrigger'
 import { adaptInfiniteIndex } from '../../../utils/arrayUtils'
 import Image from '../../ui/Image'
 import LinkButton from '../../ui/LinkButton'
@@ -26,6 +27,11 @@ const ImageGallery = (): JSX.Element => {
   const loadNext = () => {
     setCurrentIndex((prev) => prev + 1)
   }
+
+  const scrollRef = useScrollTrigger({
+    scrollDownHandler: loadPrevious,
+    scrollUpHandler: loadNext,
+  })
 
   const currentElementIndex = adaptInfiniteIndex(
     currentIndex,
@@ -55,7 +61,7 @@ const ImageGallery = (): JSX.Element => {
         }
       />
 
-      <Wrapper>
+      <Wrapper ref={scrollRef}>
         <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
         <AnimatePresence>
           <Background
@@ -185,7 +191,7 @@ const Grid = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
-  gap: 2rem;
+  gap: 32px;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: 'before current next';
   padding: 16px;
@@ -252,7 +258,7 @@ const imageVariant = ({ status }: ImageWrapperProps) => {
 }
 
 const ImageWrapper = styled.div<ImageWrapperProps>`
-  border-radius: 0.625rem;
+  border-radius: 10px;
   border: 1px solid #000000;
   overflow: hidden;
 
