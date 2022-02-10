@@ -27,6 +27,7 @@ const LinkButton = ({
 
 const StyledLink = styled.a`
   display: inline-block;
+  text-align: center;
 
   background-color: white;
   color: black;

@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import React from 'react'
 
 type Props = {
@@ -30,4 +29,4 @@ const Image = ({
   )
 }
 
-export default motion(Image)
+export default Image

@@ -12,11 +12,6 @@ import Cursor from '../ProgressCursor'
 
 import GalleryProgressIndicator from './GalleryProgressIndicator'
 
-const galleryItemVariants = {
-  visible: { opacity: 1 },
-  hidden: { opacity: 0 },
-}
-
 const ImageGallery = (): JSX.Element => {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -33,25 +28,29 @@ const ImageGallery = (): JSX.Element => {
     scrollUpHandler: loadNext,
   })
 
+  //Check array length
+  if (!galleryData || galleryData.length < 5) {
+    throw new Error('Invalid data')
+  }
+
   const currentElementIndex = adaptInfiniteIndex(
     currentIndex,
     galleryData.length
   )
 
   const initialElement =
-    galleryData[adaptInfiniteIndex(currentIndex - 1, galleryData.length)]
+    galleryData[adaptInfiniteIndex(currentIndex - 2, galleryData.length)]
 
   const previousElement =
-    galleryData[adaptInfiniteIndex(currentIndex, galleryData.length)]
+    galleryData[adaptInfiniteIndex(currentIndex - 1, galleryData.length)]
 
-  const currentElement =
-    galleryData[adaptInfiniteIndex(currentIndex + 1, galleryData.length)]
+  const currentElement = galleryData[currentElementIndex]
 
   const nextElement =
-    galleryData[adaptInfiniteIndex(currentIndex + 2, galleryData.length)]
+    galleryData[adaptInfiniteIndex(currentIndex + 1, galleryData.length)]
 
   const lastElement =
-    galleryData[adaptInfiniteIndex(currentIndex + 3, galleryData.length)]
+    galleryData[adaptInfiniteIndex(currentIndex + 2, galleryData.length)]
 
   return (
     <>
@@ -62,7 +61,7 @@ const ImageGallery = (): JSX.Element => {
         }
       />
       <Wrapper ref={scrollRef}>
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           <Background
             key={`background_${currentElement.id}`}
             src={currentElement.imageBlur}
@@ -95,14 +94,21 @@ const ImageGallery = (): JSX.Element => {
 
               return (
                 <ImageCard
-                  key={currentIndex + index}
+                  key={`image_${currentIndex + index}`}
                   layout
-                  variants={galleryItemVariants}
-                  animate={
-                    status === 'initial' || status === 'last'
-                      ? 'hidden'
-                      : 'visible'
-                  }
+                  initial={{
+                    opacity: 0,
+                    y:
+                      status === 'previous'
+                        ? 300
+                        : status === 'next'
+                        ? -300
+                        : 0,
+                  }}
+                  animate={{
+                    opacity: status === 'initial' || status === 'last' ? 0 : 1,
+                    y: 0,
+                  }}
                   onClick={() =>
                     status === 'next'
                       ? loadNext()
@@ -116,7 +122,7 @@ const ImageGallery = (): JSX.Element => {
                   <ImageItem
                     src={item.image1X}
                     srcRetina={item.image2X}
-                    alt={''}
+                    alt={`Image from ${item.authorName} for ${item.client}`}
                   />
                 </ImageCard>
               )
@@ -324,14 +330,14 @@ const InfoWrapper = styled.div`
   grid-area: next;
   align-self: end;
 
-  max-width: 100px;
+  max-width: 110px;
+
+  flex-direction: column;
+  gap: 16px;
+
   margin-bottom: 80px;
 
   white-space: pre;
-
-  div {
-    margin-bottom: 16px;
-  }
 
   div:last-of-type {
     text-align: right;
@@ -340,7 +346,7 @@ const InfoWrapper = styled.div`
   display: none;
 
   @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
-    display: block;
+    display: flex;
   }
 `
 

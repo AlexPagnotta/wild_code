@@ -1,1 +1,1 @@
-Wild code challenge
+Wild code
