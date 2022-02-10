@@ -10,6 +10,7 @@ const ProgressCursor = ({ progressPercentage }: Props): JSX.Element => {
   const cursorX = useMotionValue(-100)
   const cursorY = useMotionValue(-100)
 
+  // Used to track mouse cursor position
   useEffect(() => {
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX - 16)
@@ -23,15 +24,22 @@ const ProgressCursor = ({ progressPercentage }: Props): JSX.Element => {
     }
   }, [cursorX, cursorY])
 
-  const radius = 20
-  const circumference = Math.ceil(2 * Math.PI * radius)
+  // Set the progress indicator circle radius
+  const cirlceRadius = 20
+
+  // Calcualte the progress indicator properties
+  const circleDiameter = cirlceRadius * 2
+  const cirlceStrokeWidth = 2
+  const cirlceFullSize = circleDiameter + cirlceStrokeWidth
+
+  // Calculate circumference and fillPercentage, needed for progress indicator
+  const circumference = Math.ceil(2 * Math.PI * cirlceRadius)
   const fillPercentage = Math.abs(
     Math.ceil((circumference / 100) * (progressPercentage - 100))
   )
 
   return (
     <Cursor
-      as={motion.div}
       style={{
         translateX: cursorX,
         translateY: cursorY,
@@ -39,36 +47,36 @@ const ProgressCursor = ({ progressPercentage }: Props): JSX.Element => {
     >
       <ProgressCircleWrapper>
         <svg
-          width='42'
-          height='42'
-          viewBox='0 0 42 42'
+          width={`${cirlceFullSize}`}
+          height={`${cirlceFullSize}`}
+          viewBox={`0 0 ${cirlceFullSize} ${cirlceFullSize}`}
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
         >
-          <circle cx='20' cy='20' r='2' fill='white' />
+          <circle cx={cirlceRadius} cy={cirlceRadius} r='2' fill='white' />
           <circle
-            cx='21'
-            cy='21'
-            r={radius}
+            cx={cirlceRadius + cirlceStrokeWidth / 2}
+            cy={cirlceRadius + cirlceStrokeWidth / 2}
+            r={cirlceRadius}
             stroke='white'
-            strokeWidth='2'
+            strokeWidth={cirlceStrokeWidth}
             strokeOpacity={0.2}
             fill='transparent'
           />
         </svg>
         <ProgressIndicator
-          width='42'
-          height='42'
-          viewBox='0 0 42 42'
+          width={`${cirlceFullSize}`}
+          height={`${cirlceFullSize}`}
+          viewBox={`0 0 ${cirlceFullSize} ${cirlceFullSize}`}
           fill='none'
           xmlns='http://www.w3.org/2000/svg'
         >
           <circle
-            cx='21'
-            cy='21'
-            r={radius}
+            cx={cirlceRadius + cirlceStrokeWidth / 2}
+            cy={cirlceRadius + cirlceStrokeWidth / 2}
+            r={cirlceRadius}
             stroke='white'
-            strokeWidth='2'
+            strokeWidth={cirlceStrokeWidth}
             fill='transparent'
             strokeDashoffset={fillPercentage}
             strokeDasharray={circumference}
@@ -79,7 +87,7 @@ const ProgressCursor = ({ progressPercentage }: Props): JSX.Element => {
   )
 }
 
-const Cursor = styled.div`
+const Cursor = styled(motion.div)`
   position: fixed;
   left: 0;
   top: 0;

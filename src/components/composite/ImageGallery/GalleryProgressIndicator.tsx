@@ -19,7 +19,7 @@ const GalleryProgressIndicator = ({
       </Text>
       <ProgressIndicatorsWrapper>
         {[...Array(totalItems)].map((_, index) => (
-          <ProgressIndicator key={index} isActive={index + 1 <= currentIndex} />
+          <ProgressIndicator key={index} isActive={index < currentIndex} />
         ))}
       </ProgressIndicatorsWrapper>
     </Wrapper>

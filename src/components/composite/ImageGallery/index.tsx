@@ -55,14 +55,13 @@ const ImageGallery = (): JSX.Element => {
 
   return (
     <>
+      {/* Custom Cursor */}
       <Cursor
         progressPercentage={
           (currentElementIndex / (galleryData.length - 1)) * 100
         }
       />
-
       <Wrapper ref={scrollRef}>
-        <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
         <AnimatePresence>
           <Background
             key={`background_${currentElement.id}`}
@@ -73,82 +72,82 @@ const ImageGallery = (): JSX.Element => {
             transition={{ duration: 1 }}
           />
         </AnimatePresence>
-        <Grid>
-          {[
-            initialElement,
-            previousElement,
-            currentElement,
-            nextElement,
-            lastElement,
-          ].map((item, index) => {
-            const status =
-              index === 0
-                ? 'initial'
-                : index === 1
-                ? 'previous'
-                : index === 2
-                ? 'current'
-                : index === 3
-                ? 'next'
-                : 'last'
+        <Container>
+          <Grid>
+            <HeaderTitle variant='h4'> XYZ Photography</HeaderTitle>
+            {[
+              initialElement,
+              previousElement,
+              currentElement,
+              nextElement,
+              lastElement,
+            ].map((item, index) => {
+              const status =
+                index === 0
+                  ? 'initial'
+                  : index === 1
+                  ? 'previous'
+                  : index === 2
+                  ? 'current'
+                  : index === 3
+                  ? 'next'
+                  : 'last'
 
-            return (
-              <ImageWrapper
-                key={currentIndex + index}
-                layout
-                variants={galleryItemVariants}
-                animate={
-                  status === 'initial' || status === 'last'
-                    ? 'hidden'
-                    : 'visible'
-                }
-                onClick={() =>
-                  status === 'next'
-                    ? loadNext()
-                    : status === 'previous'
-                    ? loadPrevious()
-                    : undefined
-                }
-                as={motion.div}
-                transition={{ ease: 'easeOut', duration: 1 }}
-                status={status}
+              return (
+                <ImageCard
+                  key={currentIndex + index}
+                  layout
+                  variants={galleryItemVariants}
+                  animate={
+                    status === 'initial' || status === 'last'
+                      ? 'hidden'
+                      : 'visible'
+                  }
+                  onClick={() =>
+                    status === 'next'
+                      ? loadNext()
+                      : status === 'previous'
+                      ? loadPrevious()
+                      : undefined
+                  }
+                  transition={{ ease: 'easeOut', duration: 1 }}
+                  status={status}
+                >
+                  <ImageItem
+                    src={item.image1X}
+                    srcRetina={item.image2X}
+                    alt={''}
+                  />
+                </ImageCard>
+              )
+            })}
+            <AnimatePresence exitBeforeEnter>
+              <TitleWrapper
+                key={`title_${currentElement.id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
               >
-                <ImageItem
-                  src={item.image1X}
-                  srcRetina={item.image2X}
-                  alt={''}
+                <Text variant='h1'>{currentElement.title}</Text>
+                <GalleryProgressIndicator
+                  currentIndex={currentElementIndex + 1}
+                  totalItems={galleryData.length}
                 />
-              </ImageWrapper>
-            )
-          })}
-          <AnimatePresence exitBeforeEnter>
-            <TextWrapper
-              key={`title_${currentElement.id}`}
-              as={motion.div}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
-            >
-              <Text variant='h1'>{currentElement.title}</Text>
-              <GalleryProgressIndicator
-                currentIndex={currentElementIndex + 1}
-                totalItems={galleryData.length}
-              />
-            </TextWrapper>
-          </AnimatePresence>
-        </Grid>
-        <InfoWrapper>
-          <Text>
-            {currentElement.authorName}
-            {'\n'}for {currentElement.client}
-          </Text>
-          <Text>{currentElement.pubblicationDate}</Text>
-          <LinkButton href={currentElement.authorSite} openInNewTab>
-            Have a look
-          </LinkButton>
-          {/**/}
-        </InfoWrapper>
+              </TitleWrapper>
+            </AnimatePresence>
+            <InfoWrapper>
+              <Text>
+                {currentElement.authorName}
+                {'\n'}for {currentElement.client}
+              </Text>
+              <Text>{currentElement.pubblicationDate}</Text>
+              <LinkButton href={currentElement.authorSite} openInNewTab>
+                Have a look
+              </LinkButton>
+            </InfoWrapper>
+          </Grid>
+        </Container>
       </Wrapper>
     </>
   )
@@ -162,10 +161,11 @@ const Wrapper = styled.div`
   overflow: hidden;
 `
 
-const HeaderTitle = styled(Text)`
-  position: absolute;
-  top: 16px;
-  left: 16px;
+const Container = styled.div`
+  margin: 0 auto;
+  padding: 16px;
+  max-width: 1920px;
+  height: 100%;
 `
 
 type BackgroundProps = {
@@ -192,12 +192,27 @@ const Grid = styled.div`
   height: 100%;
   display: grid;
   gap: 32px;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: 'before current next';
-  padding: 16px;
+
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'next next next'
+    'current current current'
+    'before before before';
+
+  @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+
+    grid-template-areas: 'before current next';
+  }
 `
 
-const TextWrapper = styled.div`
+const HeaderTitle = styled(Text)`
+  grid-column-start: 1;
+  grid-row-start: 1;
+`
+
+const TitleWrapper = styled(motion.div)`
   grid-area: current;
   text-align: center;
   align-self: center;
@@ -211,11 +226,11 @@ const TextWrapper = styled.div`
   align-items: center;
 `
 
-type ImageWrapperProps = {
+type ImageCardProps = {
   status: 'initial' | 'previous' | 'current' | 'next' | 'last'
 }
 
-const imageVariant = ({ status }: ImageWrapperProps) => {
+const imageCardVariant = ({ status }: ImageCardProps) => {
   switch (status) {
     case 'initial':
       return css`
@@ -257,23 +272,42 @@ const imageVariant = ({ status }: ImageWrapperProps) => {
   }
 }
 
-const ImageWrapper = styled.div<ImageWrapperProps>`
+const ImageCard = styled(motion.div)<ImageCardProps>`
   border-radius: 10px;
   border: 1px solid #000000;
   overflow: hidden;
+  position: relative;
 
   ${({ status }) =>
     status === 'current'
       ? css`
-          height: 680px;
-          width: 512px;
+          aspect-ratio: 64 / 85;
+
+          width: 250px;
+
+          @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
+            width: 420px;
+          }
+
+          @media (min-width: ${({ theme }) => `${theme.screens.xl}px`}) {
+            width: 512px;
+          }
         `
       : css`
-          height: 330px;
-          width: 248px;
+          aspect-ratio: 124 / 165;
+
+          width: 80px;
+
+          @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
+            width: 120px;
+          }
+
+          @media (min-width: ${({ theme }) => `${theme.screens.xl}px`}) {
+            width: 248px;
+          }
         `}
 
-  ${imageVariant};
+  ${imageCardVariant};
 `
 
 const ImageItem = styled(Image)`
@@ -281,12 +315,17 @@ const ImageItem = styled(Image)`
   height: 100%;
   object-position: center;
   object-fit: cover;
+
+  position: absolute;
+  top: 0;
 `
 
 const InfoWrapper = styled.div`
-  position: absolute;
-  bottom: 90px;
-  right: 155px;
+  grid-area: next;
+  align-self: end;
+
+  max-width: 100px;
+  margin-bottom: 80px;
 
   white-space: pre;
 
@@ -296,6 +335,12 @@ const InfoWrapper = styled.div`
 
   div:last-of-type {
     text-align: right;
+  }
+
+  display: none;
+
+  @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
+    display: block;
   }
 `
 

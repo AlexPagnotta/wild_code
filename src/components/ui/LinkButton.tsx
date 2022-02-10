@@ -28,18 +28,17 @@ const LinkButton = ({
 const StyledLink = styled.a`
   display: inline-block;
 
+  background-color: white;
+  color: black;
+  padding: 9px 16px 8px;
+  border-radius: 24px;
+
   font-family: ${({ theme }) => theme.fontFamily.base};
   font-weight: 700;
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-
-  background-color: white;
-  color: black;
-
-  padding: 9px 16px 8px;
-  border-radius: 24px;
 `
 
 export default LinkButton

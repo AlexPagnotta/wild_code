@@ -26,10 +26,22 @@ const Text = ({
 const H1 = styled.h1`
   font-family: ${({ theme }) => theme.fontFamily.title};
   font-weight: 400;
-  font-size: 220px;
-  line-height: 176px;
+
   letter-spacing: 0.04em;
   text-transform: uppercase;
+
+  font-size: 60px;
+  line-height: 50px;
+
+  @media (min-width: ${({ theme }) => `${theme.screens.md}px`}) {
+    font-size: 100px;
+    line-height: 80px;
+  }
+
+  @media (min-width: ${({ theme }) => `${theme.screens.xl}px`}) {
+    font-size: 220px;
+    line-height: 176px;
+  }
 `
 
 const H4 = styled.h4`
